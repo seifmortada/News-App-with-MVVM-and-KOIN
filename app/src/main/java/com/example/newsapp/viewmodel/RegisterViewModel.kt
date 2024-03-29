@@ -12,11 +12,8 @@ import com.example.newsapp.repository.UserRepository
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val userRepo:UserRepository) : ViewModel() {
-     var allUsers: LiveData<List<User>> = MutableLiveData()
+     var allUsers: LiveData<List<User>> = userRepo.allUser
 
-    init {
-        allUsers = userRepo.allUser
-    }
 
     fun addUser(user: User) = viewModelScope.launch {
         userRepo.addUser(user)

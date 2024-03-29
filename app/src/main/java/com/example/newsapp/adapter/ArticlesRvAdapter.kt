@@ -36,15 +36,15 @@ class ArticlesRvAdapter : RecyclerView.Adapter<ArticlesRvAdapter.MyViewHolder>()
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = articleList[position]
+        if (currentItem.url == "null" || currentItem.urlToImage=="null") {
+            Log.e(TAG, "url is null ")
+        } else {
         holder.binding.apply {
             Picasso.get().load(currentItem.urlToImage).into(articleImg)
             articleTitle.text = currentItem.title
             newsDesciption.text = currentItem.description
         }
         holder.itemView.setOnClickListener {
-            if (currentItem.url == "null") {
-                Log.e(TAG, "url is null " )
-            } else {
                 val action =
                     HomeFragmentDirections.actionHomeFragmentToNewsDetailsFragment(currentItem.url)
                 it.findNavController().navigate(action)

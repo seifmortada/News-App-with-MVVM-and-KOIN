@@ -17,7 +17,7 @@ class NewsDetailsFragment : Fragment() {
     private lateinit var binding: FragmentNewsDetailsBinding
     private val viewModel: NewsViewModel by inject()
     val args = navArgs<NewsDetailsFragmentArgs>()
-    private lateinit var currentArticleToSave: ArticleData
+    private var currentArticleToSave: ArticleData? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,11 +49,17 @@ class NewsDetailsFragment : Fragment() {
             }
         }
         binding.saveArticleBtn.setOnClickListener {
-            //Save Article
-            viewModel.saveArticle(currentArticleToSave)
-            Snackbar.make(
-                requireView(), "Article saved successfully", Snackbar.LENGTH_SHORT
-            ).show()
+            if (currentArticleToSave!=null) {
+                //Save Article
+                viewModel.saveArticle(currentArticleToSave!!)
+                Snackbar.make(
+                    requireView(), "Article saved successfully", Snackbar.LENGTH_SHORT
+                ).show()
+            } else {
+                Snackbar.make(
+                    requireView(), "Source isn't saved", Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }

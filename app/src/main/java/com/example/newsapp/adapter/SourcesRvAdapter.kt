@@ -30,6 +30,9 @@ class SourcesRvAdapter : RecyclerView.Adapter<SourcesRvAdapter.MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = sourceList[position]
+        if (currentItem.url == "null") {
+            Log.e(Constants.TAG, "url is null ")
+        } else {
         holder.binding.apply {
             newsName.text = currentItem.name
             newsCategory.text = currentItem.category
@@ -37,9 +40,6 @@ class SourcesRvAdapter : RecyclerView.Adapter<SourcesRvAdapter.MyViewHolder>() {
             newsDescription.text = currentItem.description
         }
         holder.itemView.setOnClickListener {
-            if (currentItem.url == "null") {
-                Log.e(Constants.TAG, "url is null ")
-            } else {
                 val action =
                     HomeFragmentDirections.actionHomeFragmentToNewsDetailsFragment(currentItem.url)
                 it.findNavController().navigate(action)

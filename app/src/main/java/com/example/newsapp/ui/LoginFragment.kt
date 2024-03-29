@@ -1,6 +1,7 @@
 package com.example.newsapp.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentLoginBinding
 import com.example.newsapp.models.User
+import com.example.newsapp.utils.Constants.TAG
 import com.example.newsapp.viewmodel.RegisterViewModel
 import org.koin.android.ext.android.inject
 
@@ -32,11 +34,15 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.allUsers.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) allUsers = emptyList() else allUsers = it
+            allUsers = it
+            allUsers.forEach {
+                Log.e(TAG, "Users are $it." )
+            }
         }
         binding.apply {
             loginBtn.setOnClickListener {
-                checkValuesAreTheSame()
+                if (checkValuesAreTheSame())
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
             }
             registerBtn.setOnClickListener {
                 findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -44,29 +50,30 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun checkValuesAreTheSame() {
-        binding.apply {
-            val name = editEmail.text.toString()
-            val password = editPassword.text.toString()
-            if (allUsers.isEmpty()) {
-                Toast.makeText(requireContext(), "There are no users", Toast.LENGTH_SHORT).show()
-                return
-            } else {
-                allUsers.forEach {
-                    if (it.name == name && it.password == password) {
-                        findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                        return
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "name or password is wrong",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return
-                    }
+    private fun checkValuesAreTheSame(): Boolean {
+        val name = binding.editEmail.text.toString().trim()
+        val password = binding.editPassword.text.toString().trim()
+
+        if (allUsers.isEmpty()) {
+            Toast.makeText(requireContext(), "There are no users", Toast.LENGTH_SHORT).show()
+            return false
+        } else {
+            var found = false
+            for (user in allUsers) {
+                if (user.name == name && user.password == password) {
+                    found = true
+                    break
                 }
+            }
+            if (found) {
+                return true
+            } else {
+                Toast.makeText(requireContext(), "Name or password is wrong", Toast.LENGTH_SHORT).show()
+                return false
             }
         }
     }
+
+
 
 }
